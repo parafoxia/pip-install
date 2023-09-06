@@ -1,0 +1,17 @@
+{
+  "paths": {
+    "action": "action.yml",
+    "readme": "README.md"
+  },
+  "show_logo": true,
+  "versioning": {
+    "enabled": true,
+    "override": "1",
+    "prefix": "v",
+    "branch": "v1"
+  },
+  "owner": "parafoxia",
+  "repo": "pip-install",
+  "title_prefix": "",
+  "pretty": true
+}
