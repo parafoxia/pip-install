@@ -1,7 +1,7 @@
 {
   "name": "pip-install",
   "version": "1.0.0",
-  "description": "Install Python packages using Pip.",
+  "description": "A fully-featured `pip install` wrapper for GitHub Actions.",
   "main": "dist/index.js",
   "scripts": {
     "build": "ncc build index.js -m --license licenses.txt",

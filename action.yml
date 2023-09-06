@@ -1,5 +1,5 @@
 name: pip-install
-description: Install Python packages using Pip.
+description: A fully-featured `pip install` wrapper for GitHub Actions.
 author: Ethan Henderson
 inputs:
   packages:
