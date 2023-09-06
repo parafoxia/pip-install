@@ -1,0 +1,31 @@
+name: Pip Install
+description: Install Python packages using Pip
+author: Ethan Henderson
+inputs:
+  packages:
+    description: The packages to install
+    required: false
+    default: ''
+  requirements:
+    description: Install from the given requirements files
+    required: false
+    default: ''
+  constraints:
+    description:  Constrain versions using the given constraints files
+    required: false
+    default: ''
+  no-deps:
+    description: Don't install package dependencies
+    required: false
+    default: 'false'
+  pre:
+    description: Include pre-release and development versions. By default, pip only finds stable versions
+    required: false
+    default: 'false'
+  editable:
+    description: Install a project in editable mode (i.e. setuptools "develop mode") from a local project path or a VCS url
+    required: false
+    default: ''
+runs:
+  using: node16
+  main: dist/index.js
