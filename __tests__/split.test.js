@@ -29,75 +29,60 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 const core = require("@actions/core");
-const exec = require("@actions/exec");
+const main = require("../index");
 
-function getStringInput(name, options) {
-  const input = core.getInput(name, options);
-  return input.length > 0 ? input : undefined;
-}
+let getInputSpy;
 
-function getBooleanInput(name, options) {
-  const input = core.getInput(name, options);
-  if (["true", "t", "1"].includes(input.toLowerCase())) {
-    return true;
-  } else if (["false", "f", "0", ""].includes(input.toLowerCase())) {
-    return false;
-  } else {
-    throw new Error(`Invalid Boolean input ('${input}') to input '${name}'`);
-  }
-}
+describe("split", () => {
+  beforeEach(() => {
+    getInputSpy = jest.spyOn(core, "getInput");
+  });
 
-function split(value) {
-  return value
-    .split(/(\s+)/)
-    .map((t) => t.trim())
-    .filter((t) => t.length > 0);
-}
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-function compileArgs() {
-  let args = ["-m", "pip", "install"];
+  it("split by spaces returns list", () => {
+    expect(main.split("never gonna give")).toStrictEqual([
+      "never",
+      "gonna",
+      "give",
+    ]);
+  });
 
-  const packages = getStringInput("packages");
+  it("split by double spaces returns list", () => {
+    expect(main.split("never  gonna  give")).toStrictEqual([
+      "never",
+      "gonna",
+      "give",
+    ]);
+  });
 
-  if (packages) {
-    args = args.concat(split(packages));
-  }
+  it("split by newlines returns list", () => {
+    expect(
+      main.split(`
+    never
+    gonna
+    give`)
+    ).toStrictEqual(["never", "gonna", "give"]);
+  });
 
-  const strOptions = {
-    requirement: "requirements",
-    constraint: "constraints",
-    editable: "editable",
-  };
-  const boolOptions = ["no-deps", "pre"];
+  it("split by double newlines returns list", () => {
+    expect(
+      main.split(`
+    never
 
-  for (let [k, v] of Object.entries(strOptions)) {
-    v = getStringInput(v);
-    if (v) {
-      for (const i of split(v)) {
-        args = args.concat(`--${k}`, i);
-      }
-    }
-  }
+    gonna
 
-  for (const k of boolOptions) {
-    if (getBooleanInput(k)) {
-      args = args.concat(`--${k}`);
-    }
-  }
+    give`)
+    ).toStrictEqual(["never", "gonna", "give"]);
+  });
 
-  return args;
-}
-
-async function main() {
-  try {
-    await exec.exec("python", compileArgs());
-  } catch (err) {
-    core.setFailed(err.message);
-  }
-}
-
-if (require.main === module) {
-  main();
-}
-
-module.exports = { compileArgs, getStringInput, getBooleanInput, main, split };
+  it("split by spaces and newlines returns list", () => {
+    expect(
+      main.split(`never
+    gonna
+    give`)
+    ).toStrictEqual(["never", "gonna", "give"]);
+  });
+});
