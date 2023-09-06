@@ -1,6 +1,9 @@
-name: pip-install
+name: Install Packages with Pip
 description: A fully-featured `pip install` wrapper for GitHub Actions.
 author: Ethan Henderson
+branding:
+  icon: 'download'
+  color: 'blue'
 inputs:
   packages:
     description: The packages to install.
