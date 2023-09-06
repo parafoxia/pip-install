@@ -4,8 +4,28 @@ on:
   push:
 
 jobs:
-  test:
-    name: Test
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Run tests
+        run: npm run test
+
+  test-run:
+    name: Test Run
+    needs: [unit-tests]
     runs-on: ubuntu-latest
 
     steps:
@@ -24,8 +44,17 @@ jobs:
             analytix
             pandas
 
+      - name: Check installed
+        run: python -c "import analytix, pandas"
+
+      - name: Uninstall packages
+        run: python -m pip freeze | xargs pip uninstall -y
+
       - name: Install prerelease packages
         uses: ./
         with:
           packages: analytix
           pre: true
+
+      - name: Check installed
+        run: python -c "import analytix; assert analytix.__version__.startswith('5')"
