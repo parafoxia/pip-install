@@ -73,4 +73,4 @@ Inputs with defaults are Boolean inputs.
 
 ## License
 
-The pip-install action for GitHub is licensed under the [BSD 3-Clause License](https://github.com/parafoxia/pip-install/blob/main/LICENSE).
+The pip-install action for GitHub Actions is licensed under the [BSD 3-Clause License](https://github.com/parafoxia/pip-install/blob/main/LICENSE).
