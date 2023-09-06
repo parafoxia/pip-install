@@ -5,6 +5,11 @@ on:
 
 jobs:
   unit-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
     name: Unit Tests
     runs-on: ubuntu-latest
 
@@ -24,6 +29,20 @@ jobs:
         run: npm run test
 
   test-run:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12-dev"
+          - "pypy-3.8"
+          - "pypy-3.9"
+          - "pypy-3.10"
+
     name: Test Run
     needs: [unit-tests]
     runs-on: ubuntu-latest
@@ -32,20 +51,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install packages
         uses: ./
         with:
-          packages: |
-            analytix
-            pandas
+          packages: example
 
       - name: Check installed
-        run: python -c "import analytix, pandas"
+        run: python -c "import example"
 
       - name: Uninstall packages
         run: python -m pip freeze | xargs pip uninstall -y
