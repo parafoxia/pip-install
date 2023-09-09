@@ -29,6 +29,143 @@ inputs:
     description: Install a project in editable mode (i.e. setuptools "develop mode") from a local project path or a VCS url.
     required: false
     default: ''
+  dry-run:
+    description: Don't actually install anything, just print what would be. Can be used in combination with `ignore_installed` to 'resolve' the requirements.
+    required: false
+    default: 'false'
+  target:
+    description: Install packages into \<dir>. By default this will not replace existing files/folders in \<dir>. Set `upgrade` to true to replace existing packages in \<dir> with new versions.
+    required: false
+    default: ''
+  platform:
+    description: Only use wheels compatible with \<platform>. Defaults to the platform of the running system. Use this option multiple times to specify multiple platforms supported by the target interpreter.
+    required: false
+    default: ''
+  python-version:
+    description: The Python interpreter version to use for wheel and "Requires-Python" compatibility checks. Defaults to a version derived from the running interpreter. The version can be specified using up to three dot-separated integers (e.g. "3" for 3.0.0, "3.7" for 3.7.0, or "3.7.3"). A major-minor version can also be given as a string without dots (e.g. "37" for 3.7.0).
+    required: false
+    default: ''
+  implementation:
+    description: Only use wheels compatible with Python implementation \<implementation>, e.g. 'pp', 'jy', 'cp',  or 'ip'. If not specified, then the current interpreter implementation is used.  Use 'py' to force implementation-agnostic wheels.
+    required: false
+    default: ''
+  abi:
+    description: Only use wheels compatible with Python abi \<abi>, e.g. 'pypy_41'. If not specified, then the current interpreter abi tag is used. Use this option multiple times to specify multiple abis supported by the target interpreter. Generally you will need to specify `implementation`, `platform`, and `python-version` when using this option.
+    required: false
+    default: ''
+  user:
+    description: Install to the Python user install directory for your platform. Typically ~/.local/, or %APPDATA%\Python on Windows. (See the Python documentation for site.USER_BASE for full details.)
+    required: false
+    default: 'false'
+  root:
+    description: Install everything relative to this alternate root directory.
+    required: false
+    default: ''
+  prefix:
+    description: Installation prefix where lib, bin and other top-level folders are placed. Note that the resulting installation may contain scripts and other resources which reference the Python interpreter of pip, and not that of `prefix`. See also the `python` option if the intention is to install packages into another (possibly pip-free) environment.
+    required: false
+    default: ''
+  src:
+    description: Directory to check out editable projects into. The default in a virtualenv is "\<venv path>/src". The default for global installs is "\<current dir>/src".
+    required: false
+    default: ''
+  upgrade:
+    description: Upgrade all specified packages to the newest available version. The handling of dependencies depends on the upgrade-strategy used.
+    required: false
+    default: 'false'
+  upgrade-strategy:
+    description: 'Determines how dependency upgrading should be handled [default: only-if-needed]. "eager" - dependencies are upgraded regardless of whether the currently installed version satisfies the requirements of the upgraded package(s). "only-if-needed" -  are upgraded only when they do not satisfy the requirements of the upgraded package(s).'
+    required: false
+    default: ''
+  force-reinstall:
+    description: Reinstall all packages even if they are already up-to-date.
+    required: false
+    default: 'false'
+  ignore-installed:
+    description: Ignore the installed packages, overwriting them. This can break your system if the existing package is of a different version or was installed with a different package manager!
+    required: false
+    default: 'false'
+  ignore-requires-python:
+    description: Ignore the Requires-Python information.
+    required: false
+    default: 'false'
+  #
+  no-build-isolation:
+    description: Disable isolation when building a modern source distribution. Build dependencies specified by PEP 518 must be already installed if this option is used.
+    required: false
+    default: 'false'
+  use-pep517:
+    description: Use PEP 517 for building source distributions (use --no-use-pep517 to force legacy behaviour).
+    required: false
+    default: 'false'
+  no-use-pep517:
+    description: Reverse of `use-pep517`.
+    required: false
+    default: 'false'
+  check-build-dependencies:
+    description: Check the build dependencies when PEP517 is used.
+    required: false
+    default: 'false'
+  break-system-packages:
+    description: Allow pip to modify an EXTERNALLY-MANAGED Python installation
+    required: false
+    default: 'false'
+  config-settings:
+    description: Configuration settings to be passed to the PEP 517 build backend. Settings take the form KEY=VALUE. Use multiple `config-settings` options to pass multiple keys to the backend.
+    required: false
+    default: ''
+  global-option:
+    description: Extra global options to be supplied to the setup.py call before the install or bdist_wheel command.
+    required: false
+    default: ''
+  compile:
+    description: Compile Python source files to bytecode
+    required: false
+    default: 'false'
+  no-compile:
+    description: Do not compile Python source files to bytecode
+    required: false
+    default: 'false'
+  no-warn-script-location:
+    description: Do not warn when installing scripts outside PATH
+    required: false
+    default: 'false'
+  no-warn-conflicts:
+    description: Do not warn about broken dependencies
+    required: false
+    default: 'false'
+  no-binary:
+    description: Do not use binary packages. Can be supplied multiple times, and each time adds to the existing value. Accepts either ":all:" to disable all binary packages, ":none:" to empty the set (notice the colons), or one or more package names with commas between them (no colons). Note that some packages are tricky to compile and may fail to install when this option is used on them.
+    required: false
+    default: ''
+  only-binary:
+    description: Do not use source packages. Can be supplied multiple times, and each time adds to the existing value. Accepts either ":all:" to disable all source packages, ":none:" to empty the set, or one or more package names with commas between them. Packages without binary distributions will fail to install when this option is used on them.
+    required: false
+    default: ''
+  prefer-binary:
+    description: Prefer older binary packages over newer source packages.
+    required: false
+    default: 'false'
+  require-hashes:
+    description: Require a hash to check each requirement against, for repeatable installs. This option is implied when any package in a requirements file has a --hash option.
+    required: false
+    default: 'false'
+  progress-bar:
+    description: 'Specify whether the progress bar should be used [on, off] (default: on)'
+    required: false
+    default: ''
+  root-user-action:
+    description: Action if pip is run as a root user. By default, a warning message is shown.
+    required: false
+    default: ''
+  report:
+    description: Generate a JSON file describing what pip did to install the provided requirements. Can be used in combination with `dry-run` and `ignore-installed` to 'resolve' the requirements. When - is used as file name it writes to stdout. When writing to stdout, please combine with the `quiet` option to avoid mixing pip logging output with JSON output.
+    required: false
+    default: ''
+  no-clean:
+    description: Don't clean up build directories.
+    required: false
+    default: 'false'
 runs:
   using: node16
   main: dist/index.js
