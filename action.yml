@@ -9,12 +9,12 @@ inputs:
     description: The packages to install.
     required: false
     default: ''
-  requirements:
+  requirement:
     description: Install from the given requirements file. Multiple files can be provided.
     required: false
     default: ''
-  constraints:
-    description:  Constrain versions using the given constraints file. Multiple files can be provided.
+  constraint:
+    description: Constrain versions using the given constraints file. Multiple files can be provided.
     required: false
     default: ''
   no-deps:

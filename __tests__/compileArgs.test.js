@@ -29,9 +29,14 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 const core = require("@actions/core");
+const fs = require("fs");
 const main = require("../index");
+const yaml = require("js-yaml");
 
 let getInputSpy;
+
+const doc = yaml.load(fs.readFileSync("action.yml", "utf-8"));
+const options = Object.entries(doc.inputs).filter(([k]) => k !== "packages");
 
 describe("compileArgs", () => {
   beforeEach(() => {
@@ -44,14 +49,14 @@ describe("compileArgs", () => {
 
   it("compile args with no packages", () => {
     getInputSpy.mockImplementation((k) => "");
-    expect(main.compileArgs()).toStrictEqual(["-m", "pip", "install"]);
+    expect(main.compileArgs(options)).toStrictEqual(["-m", "pip", "install"]);
   });
 
   it("compile args with packages", () => {
     getInputSpy.mockImplementation((k) =>
       k === "packages" ? "never gonna give" : ""
     );
-    expect(main.compileArgs()).toStrictEqual([
+    expect(main.compileArgs(options)).toStrictEqual([
       "-m",
       "pip",
       "install",
@@ -61,11 +66,11 @@ describe("compileArgs", () => {
     ]);
   });
 
-  it("compile args with requirements", () => {
+  it("compile args with string option", () => {
     getInputSpy.mockImplementation((k) =>
-      k === "requirements" ? "a.txt b.txt c.txt" : ""
+      k === "requirement" ? "a.txt b.txt c.txt" : ""
     );
-    expect(main.compileArgs()).toStrictEqual([
+    expect(main.compileArgs(options)).toStrictEqual([
       "-m",
       "pip",
       "install",
@@ -78,26 +83,9 @@ describe("compileArgs", () => {
     ]);
   });
 
-  it("compile args with constraints", () => {
-    getInputSpy.mockImplementation((k) =>
-      k === "constraints" ? "a.txt b.txt c.txt" : ""
-    );
-    expect(main.compileArgs()).toStrictEqual([
-      "-m",
-      "pip",
-      "install",
-      "--constraint",
-      "a.txt",
-      "--constraint",
-      "b.txt",
-      "--constraint",
-      "c.txt",
-    ]);
-  });
-
-  it("compile args with no-deps", () => {
+  it("compile args with bool option", () => {
     getInputSpy.mockImplementation((k) => (k === "no-deps" ? "true" : ""));
-    expect(main.compileArgs()).toStrictEqual([
+    expect(main.compileArgs(options)).toStrictEqual([
       "-m",
       "pip",
       "install",
@@ -105,40 +93,20 @@ describe("compileArgs", () => {
     ]);
   });
 
-  it("compile args with pre", () => {
-    getInputSpy.mockImplementation((k) => (k === "pre" ? "true" : ""));
-    expect(main.compileArgs()).toStrictEqual(["-m", "pip", "install", "--pre"]);
-  });
-
-  it("compile args with editable", () => {
-    getInputSpy.mockImplementation((k) => (k === "editable" ? "." : ""));
-    expect(main.compileArgs()).toStrictEqual([
-      "-m",
-      "pip",
-      "install",
-      "--editable",
-      ".",
-    ]);
-  });
-
-  it("compile args with mix", () => {
+  it("compile args with all", () => {
     getInputSpy.mockImplementation((k) => {
       switch (k) {
         case "packages":
           return "rick roll";
-        case "requirements":
+        case "requirement":
           return "a.txt b.txt";
-        case "constraints":
-          return "c.txt";
         case "no-deps":
           return "true";
-        case "pre":
-          return "true";
-        case "editable":
-          return ".";
+        default:
+          return "";
       }
     });
-    expect(main.compileArgs()).toStrictEqual([
+    expect(main.compileArgs(options)).toStrictEqual([
       "-m",
       "pip",
       "install",
@@ -148,12 +116,7 @@ describe("compileArgs", () => {
       "a.txt",
       "--requirement",
       "b.txt",
-      "--constraint",
-      "c.txt",
-      "--editable",
-      ".",
       "--no-deps",
-      "--pre",
     ]);
   });
 });

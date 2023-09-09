@@ -30,6 +30,8 @@
 
 const core = require("@actions/core");
 const exec = require("@actions/exec");
+const fs = require("fs");
+const yaml = require("js-yaml");
 
 function getStringInput(name, options) {
   const input = core.getInput(name, options);
@@ -54,43 +56,46 @@ function split(value) {
     .filter((t) => t.length > 0);
 }
 
-function compileArgs() {
+function compileArgs(options) {
   let args = ["-m", "pip", "install"];
 
   const packages = getStringInput("packages");
-
   if (packages) {
     args = args.concat(split(packages));
   }
 
-  const strOptions = {
-    requirement: "requirements",
-    constraint: "constraints",
-    editable: "editable",
-  };
-  const boolOptions = ["no-deps", "pre"];
+  // `options` is not an object, but instead, it's entries.
+  for (const [k, attrs] of options) {
+    switch (attrs.default) {
+      case "true":
+      case "false":
+        // Boolean input.
+        if (getBooleanInput(k)) {
+          args = args.concat(`--${k}`);
+        }
+        break;
 
-  for (let [k, v] of Object.entries(strOptions)) {
-    v = getStringInput(v);
-    if (v) {
-      for (const i of split(v)) {
-        args = args.concat(`--${k}`, i);
-      }
+      default:
+        // String input.
+        const v = getStringInput(k);
+        if (v) {
+          for (const i of split(v)) {
+            args = args.concat(`--${k}`, i);
+          }
+        }
+        break;
     }
   }
-
-  for (const k of boolOptions) {
-    if (getBooleanInput(k)) {
-      args = args.concat(`--${k}`);
-    }
-  }
-
   return args;
 }
 
 async function main() {
   try {
-    await exec.exec("python", compileArgs());
+    const doc = yaml.load(fs.readFileSync("action.yml", "utf-8"));
+    const options = Object.entries(doc.inputs).filter(
+      ([k]) => k !== "packages"
+    );
+    await exec.exec("python", compileArgs(options));
   } catch (err) {
     core.setFailed(err.message);
   }
