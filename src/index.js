@@ -32,6 +32,7 @@ const core = require("@actions/core");
 const exec = require("@actions/exec");
 const fs = require("fs");
 const yaml = require("js-yaml");
+const { env } = require("process");
 
 function getStringInput(name, options) {
   const input = core.getInput(name, options);
@@ -91,7 +92,8 @@ function compileArgs(options) {
 
 async function main() {
   try {
-    const doc = yaml.load(fs.readFileSync("action.yml", "utf-8"));
+    actionFile = __filename.split("/").slice(1, -2).join("/") + "/action.yml";
+    const doc = yaml.load(fs.readFileSync(actionFile, "utf-8"));
     const options = Object.entries(doc.inputs).filter(
       ([k]) => k !== "packages"
     );

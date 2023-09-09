@@ -30,7 +30,7 @@
 
 const core = require("@actions/core");
 const fs = require("fs");
-const main = require("../index");
+const main = require("../src/index");
 const yaml = require("js-yaml");
 
 let getInputSpy;

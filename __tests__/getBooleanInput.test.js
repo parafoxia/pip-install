@@ -29,7 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 const core = require("@actions/core");
-const main = require("../index");
+const main = require("../src/index");
 
 let getInputSpy;
 
