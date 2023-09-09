@@ -10,6 +10,10 @@ A fully-featured `pip install` wrapper for GitHub Actions.
 
 <!-- end description -->
 
+## Prerequisits
+
+The [`actions/setup-python`](https://github.com/actions/setup-python) action should be run before this.
+
 ## Usage
 
 You can use pip-install to install packages directly...
@@ -32,13 +36,15 @@ You can use pip-install to install packages directly...
       requirements-dev.txt
 ```
 
-...or as an editable install.
+...or as an editable install...
 
 ```yaml
 - uses: parafoxia/pip-install@v1
   with:
     editable: "."
 ```
+
+...or all three!
 
 You can also provide options to modify the command's behaviour.
 
