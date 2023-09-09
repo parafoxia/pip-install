@@ -1,6 +1,6 @@
 {
   "name": "pip-install",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0",
   "description": "A fully-featured `pip install` wrapper for GitHub Actions.",
   "main": "dist/index.js",
   "scripts": {
